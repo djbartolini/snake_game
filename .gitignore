@@ -1,1 +1,9 @@
+# macOS
 .DS_Store
+
+# IDE
+.fleet/
+.fleet/*
+
+# binaries
+snake_game
