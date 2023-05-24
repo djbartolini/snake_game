@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "Compile",
+            "program": "clang++",
+            "args": ["SnakeGame.cpp", "-o", "snake_game", "-I", "/opt/homebrew/opt/ncurses/lib", "-lncurses"]
+        },
+        {
+            "type": "command",
+            "name": "Run",
+            "program": "./snake_game"
+        }
+    ]
+}
