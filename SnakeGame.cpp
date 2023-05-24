@@ -4,8 +4,8 @@
 #include "ncurses.h"// refresh
 
 bool gameOver;
-const int width = 20;
-const int height = 20;
+const int width = 30;
+const int height = 30;
 int x, y, fruitX, fruitY;
 int score;
 enum eDir { STOP = 0, LEFT, RIGHT, UP, DOWN };
@@ -41,6 +41,13 @@ void Draw() {
     mvprintw(i, 0, "#");
     for (int j = 1; j < width - 1; j++) {
       mvprintw(i, j, " ");
+
+      if ((i - 1) == y && (j - 1) == x) {
+        mvprintw(i, j, "O");
+      } else if ((i - 1) == fruitY && (j - 1) == fruitX) {
+        mvprintw(i, j, "X");
+      }
+
     }
     mvprintw(i, width - 1, "#");
   }
