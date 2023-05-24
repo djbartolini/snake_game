@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unistd.h> // usleep()
 #include <cstdio>
+#include <cstdlib> // srand()
 #include "ncurses.h"// refresh
 
 bool gameOver;
@@ -21,7 +22,7 @@ void Setup() {
   cbreak();
   noecho();
   curs_set(0);
-  
+
   gameOver = false;
 
   // initialize new snake (player) in center of map
@@ -42,7 +43,7 @@ void Draw() {
   // draw the map boundaries
   // top boundary `#`
   for (int i = 0; i < width; i++) {
-    mvprintw(0, i, "#");
+    mvprintw(0, i, "# ");
   }
   // middle portion
   // can contain boundary `#`, snake head `O`, snake tail `o`, or fruit `X`
@@ -59,9 +60,9 @@ void Draw() {
       } else {
         bool isTailSegment = false;
         for (int k = 0; k < nTail; k++) {
-          if (tailX[k] == j && tailY[k] == i) {
-            mvprintw(i, j, "o");
+          if (tailX[k] == (j - 1) && tailY[k] == (i - 1)) {
             isTailSegment = true;
+            mvprintw(i, j, "o");
             break;
           }
         }
@@ -109,12 +110,31 @@ void Input() {
 // game logic
 void Logic() {
   // tail position made by finding the previous 2 tails coordinates
-  int prevX = tailX[0];
-  int prevY = tailY[0];
+  int prevX = x;
+  int prevY = y;
   int prev2X, prev2Y;
-  tailX[0] = x + 1;
-  tailY[0] = y + 1;
+  tailX[0] = x;
+  tailY[0] = y;
 
+  // your score increases and tail grows for every fruit eaten
+  if (x == fruitX && y == fruitY) {
+    score += 10;
+
+    fruitX = rand() % width;
+    fruitY = rand() % height;
+
+    // check to ensure new fruit doesn't spawn at the snake
+    for (int i = 0; i < nTail; i++) {
+      if (fruitX == tailX[i] && fruitY == tailY[i] || fruitX == x && fruitY == y) {
+        fruitX = rand() % width;
+        fruitY = rand() % height;
+      }
+    }
+
+    nTail++;
+  }
+
+  // shift tail positions in the arrays
   for (int i = 1; i < nTail; i++) {
     prev2X = tailX[i];
     prev2Y = tailY[i];
@@ -123,6 +143,7 @@ void Logic() {
     prevX = prev2X;
     prevY = prev2Y;
   }
+
 
   // 'listen' for key inputs
   switch (dir) {
@@ -147,21 +168,11 @@ void Logic() {
     gameOver = true;
   }
 
-//  // you die if you eat your tail
-//  for (int i = 0; i < nTail; i++) {
-//    if (tailX[i] == x && tailY[i] == y) {
-//      gameOver = true;
-//    }
-//  }
-
-  // your score increases and tail grows for every fruit eaten
-  if (x == fruitX && y == fruitY) {
-    score += 10;
-
-    fruitX = rand() % width;
-    fruitY = rand() % height;
-
-    nTail++;
+  // you die if you eat your tail
+  for (int i = 0; i < nTail; i++) {
+    if (tailX[i] == x && tailY[i] == y) {
+      gameOver = true;
+    }
   }
 }
 
@@ -169,6 +180,7 @@ void Logic() {
 void Cleanup() {
   endwin();
 }
+
 
 int main() {
   Setup();

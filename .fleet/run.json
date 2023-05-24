@@ -4,7 +4,7 @@
             "type": "command",
             "name": "Compile",
             "program": "clang++",
-            "args": ["SnakeGame.cpp", "-o", "snake_game", "-I", "/opt/homebrew/opt/ncurses/lib", "-lncurses"]
+            "args": ["SnakeGame.cpp", "-o", "snake_game", "-lncurses"]
         },
         {
             "type": "command",
