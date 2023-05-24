@@ -56,17 +56,61 @@ void Draw() {
     mvprintw(height - 1, i, "#");
   }
   
+  mvprintw(0, width + 2, "Score: %d", score);
   refresh();
 }
 
 
 void Input() {
-  
+  int ch = getch();
+
+  switch (ch) {
+  case 'a':
+    dir = LEFT;
+    break;
+  case 'd':
+    dir = RIGHT;
+    break;
+  case 'w':
+    dir = UP;
+    break;
+  case 's':
+    dir = DOWN;
+    break;
+  case 'x':
+    gameOver = true;
+    break;
+  }
 }
 
 void Logic() {
-  
+  switch (dir) {
+    case LEFT:
+      x--;
+      break;
+    case RIGHT:
+      x++;
+      break;
+    case UP:
+      y--;
+      break;
+    case DOWN:
+      y++;
+      break;
+    default:
+      break;
+  }
+  if (x > width || x < 0 || y > height || y < 0) {
+    gameOver = true;
+  }
+  if (x == fruitX && y == fruitY) {
+    score += 10;
+
+    fruitX = rand() % width;
+    fruitY = rand() % height;
+  }
 }
+
 void Cleanup() {
   endwin();
 }
